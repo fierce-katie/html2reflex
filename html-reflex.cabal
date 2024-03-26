@@ -10,14 +10,13 @@ copyright:           2023 Catherine Galkina
 category:            Utility
 build-type:          Simple
 extra-doc-files:     README.md
-                     CHANGELOG.md
 tested-with:         GHC == 8.8.3
 
 common common-options
   build-depends:       base >= 4.13.0.0
                      , tagsoup
                      , text
-  
+
   ghc-options:         -Wall
                        -Wcompat
                        -Widentities

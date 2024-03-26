@@ -1,7 +1,8 @@
 # html-reflex
 
-[![Hackage](https://img.shields.io/hackage/v/html-reflex.svg?logo=haskell)](https://hackage.haskell.org/package/html-reflex)
-[![Stackage Lts](http://stackage.org/package/html-reflex/badge/lts)](http://stackage.org/lts/package/html-reflex)
-[![Stackage Nightly](http://stackage.org/package/html-reflex/badge/nightly)](http://stackage.org/nightly/package/html-reflex)
+Convert raw HTML to code in [Reflex-DOM](https://hackage.haskell.org/package/reflex-dom) DSL.
 
-Convert HTML to Reflex
+Usage: `stack run` will open a simple CLI where you can insert (possibly multi-line)
+raw HTML extract, press Ctrl-D, and it will be converted into Haskell code.
+
+Press Ctrl-C to exit.
