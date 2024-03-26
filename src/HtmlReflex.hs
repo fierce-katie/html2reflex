@@ -20,13 +20,13 @@ formatTree n = \case
     , innerFunc inner, "\n", formatInner inner]
   _ -> ""
   where
-    innerFunc inner
-      | P.null inner = ""
-      | P.length inner == 1 = "$"
-      | otherwise = "do"
-    formatInner inner
-      | P.null inner = "blank"
-      | otherwise = T.concat $ P.map (formatTree (n+1)) inner
+    innerFunc = \case
+      [] -> ""
+      [_] -> "$"
+      _ -> "do"
+    formatInner = \case
+      [] -> "blank"
+      inner -> T.concat $ P.map (formatTree (n+1)) inner
 
 formatElem :: (Eq a, Show a, IsString a) => Int -> a -> [Attribute Text] -> [Text]
 formatElem n el attrs
