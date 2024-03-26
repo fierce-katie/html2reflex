@@ -30,15 +30,17 @@ formatTree n = \case
 
 formatElem :: (Eq a, Show a, IsString a) => a -> [Attribute Text] -> [Text]
 formatElem el attrs
-  -- | el == "select"
-  -- | el == "input"
-  -- | el == "textarea"
+  | el == "input" = elemWithConfig "input"
+  | el == "select" = elemWithConfig "select"
+  | el == "textarea" = elemWithConfig "textArea"
   | P.null attrs = ["el ", toText el]
   | el == "div" && classOnly attrs =
     ["divClass ", toText $ snd (P.head attrs)]
   | classOnly attrs = ["elClass ", toText el, " ", toText $ snd (P.head attrs)]
-  | otherwise = ["elAttr ", toText el, " (",
-    T.intercalate " <> " (P.map toAttr $ attrs) <> ")"]
+  | otherwise = ["elAttr ", toText el, " ", formatAttrs attrs]
+  where
+    elemWithConfig e =
+      [e <> "Element (def & initialAttributes .~ ", formatAttrs attrs, ")"]
 
 toText :: Show a => a -> Text
 toText = T.pack . show
@@ -56,5 +58,8 @@ classOnly :: [Attribute Text] -> Bool
 classOnly [("class",_)] = True
 classOnly _ = False
 
-toAttr :: Attribute Text -> Text
-toAttr (k,v) = toText k <> " =: " <> toText v
+formatAttrs :: [Attribute Text] -> Text
+formatAttrs = parens . T.intercalate " <> " . P.map toAttr
+  where
+    parens txt = "(" <> txt <> ")"
+    toAttr (k,v) = toText k <> " =: " <> toText v
