@@ -4,13 +4,13 @@
 module HtmlReflex (htmlToReflex) where
 
 import Data.String
-import Data.Text (Text)
-import qualified Data.Text as T
+import Data.Text as T
+import Prelude as P
 import Text.HTML.TagSoup
 import Text.HTML.TagSoup.Tree
 
 htmlToReflex :: Text -> Text
-htmlToReflex = T.concat . map (formatTree 0) . parseTree
+htmlToReflex = T.concat . P.map (formatTree 0) . parseTree
 
 formatTree :: Int -> TagTree Text -> Text
 formatTree n = \case
@@ -21,24 +21,24 @@ formatTree n = \case
   _ -> ""
   where
     innerFunc inner
-      | null inner = ""
-      | length inner == 1 = "$"
+      | P.null inner = ""
+      | P.length inner == 1 = "$"
       | otherwise = "do"
     formatInner inner
-      | null inner = "blank"
-      | otherwise = T.concat $ map (formatTree (n+1)) inner
+      | P.null inner = "blank"
+      | otherwise = T.concat $ P.map (formatTree (n+1)) inner
 
 formatElem :: (Eq a, Show a, IsString a) => a -> [Attribute Text] -> [Text]
 formatElem el attrs
   -- | el == "select"
   -- | el == "input"
   -- | el == "textarea"
-  | null attrs = ["el ", toText el]
+  | P.null attrs = ["el ", toText el]
   | el == "div" && classOnly attrs =
-    ["divClass ", toText $ snd (head attrs)]
-  | classOnly attrs = ["elClass ", toText el, " ", toText $ snd (head attrs)]
+    ["divClass ", toText $ snd (P.head attrs)]
+  | classOnly attrs = ["elClass ", toText el, " ", toText $ snd (P.head attrs)]
   | otherwise = ["elAttr ", toText el, " (",
-    T.intercalate " <> " (map toAttr $ attrs) <> ")"]
+    T.intercalate " <> " (P.map toAttr $ attrs) <> ")"]
 
 toText :: Show a => a -> Text
 toText = T.pack . show
