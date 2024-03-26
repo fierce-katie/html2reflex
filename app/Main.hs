@@ -8,7 +8,7 @@ main :: IO ()
 main = go
   where
     go = do
-      putStrLn "Paste raw HTML and press <Ctrl-D>, press <Ctrl-C> to exit:"
+      putStrLn "Paste raw HTML and press <Ctrl-D> or press <Ctrl-C> to exit:"
       tty <- openFile "/dev/tty" ReadMode
       s <- hGetContents' tty
       hClose tty

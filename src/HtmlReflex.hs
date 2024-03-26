@@ -45,14 +45,21 @@ formatElem n el attrs
       , shift (n+1), "-- & ", e, "ElementConfig_initialValue .~ _\n"
       , shift n, ")"]
 
-toText :: Show a => a -> Text
-toText = T.pack . show
-
 formatTag :: Int -> Tag Text -> Text
 formatTag n = \case
   TagText (T.strip -> txt) | not (T.null txt) -> "text \"" <> txt <> "\""
+  -- <img>, <br> and alike
   TagOpen el attrs -> T.concat $ formatElem n el attrs
   _ -> ""
+
+formatAttrs :: [Attribute Text] -> Text
+formatAttrs = parens . T.intercalate " <> " . P.map toAttr
+  where
+    parens txt = "(" <> txt <> ")"
+    toAttr (k,v) = toText k <> " =: " <> toText v
+
+toText :: Show a => a -> Text
+toText = T.pack . show
 
 shift :: Int -> Text
 shift = flip T.replicate " " . (*2)
@@ -60,9 +67,3 @@ shift = flip T.replicate " " . (*2)
 classOnly :: [Attribute Text] -> Bool
 classOnly [("class",_)] = True
 classOnly _ = False
-
-formatAttrs :: [Attribute Text] -> Text
-formatAttrs = parens . T.intercalate " <> " . P.map toAttr
-  where
-    parens txt = "(" <> txt <> ")"
-    toAttr (k,v) = toText k <> " =: " <> toText v
