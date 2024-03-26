@@ -1,0 +1,50 @@
+cabal-version:       2.4
+name:                html-reflex
+version:             0.0.0.0
+synopsis:            Convert HTML to Reflex
+description:         Convert HTML to Reflex
+license:             NONE
+author:              Catherine Galkina
+maintainer:          Catherine Galkina <catherine.galkina@gmail.com>
+copyright:           2023 Catherine Galkina
+category:            Utility
+build-type:          Simple
+extra-doc-files:     README.md
+                     CHANGELOG.md
+tested-with:         GHC == 8.8.3
+
+common common-options
+  build-depends:       base >= 4.13.0.0
+                     , tagsoup
+                     , text
+  
+  ghc-options:         -Wall
+                       -Wcompat
+                       -Widentities
+                       -Wincomplete-uni-patterns
+                       -Wincomplete-record-updates
+  if impl(ghc >= 8.0)
+    ghc-options:       -Wredundant-constraints
+  if impl(ghc >= 8.2)
+    ghc-options:       -fhide-source-paths
+  if impl(ghc >= 8.4)
+    ghc-options:       -Wmissing-export-lists
+                       -Wpartial-fields
+  if impl(ghc >= 8.8)
+    ghc-options:       -Wmissing-deriving-strategies
+
+  default-language:    Haskell2010
+
+library
+  import:              common-options
+  hs-source-dirs:      src
+  exposed-modules:     HtmlReflex
+
+executable html-reflex
+  import:              common-options
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  build-depends:       html-reflex
+  ghc-options:         -threaded
+                       -rtsopts
+                       -with-rtsopts=-N
