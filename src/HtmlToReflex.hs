@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ViewPatterns #-}
-module HtmlReflex (htmlToReflex) where
+module HtmlToReflex (htmlToReflex) where
 
 import Data.String
 import Data.Text as T
@@ -47,9 +47,12 @@ formatElem n el attrs
 
 formatTag :: Int -> Tag Text -> Text
 formatTag n = \case
-  TagText (T.strip -> txt) | not (T.null txt) -> "text \"" <> txt <> "\""
+  TagText (T.strip -> txt) | not (T.null txt) -> T.concat
+    [ "text \""
+    , T.intercalate " " . P.map T.strip $  T.lines txt
+    , "\"" ]
   -- <img>, <br> and alike
-  TagOpen el attrs -> T.concat $ formatElem n el attrs
+  TagOpen el attrs -> T.concat $ formatElem n el attrs ++ [" blank"]
   _ -> ""
 
 formatAttrs :: [Attribute Text] -> Text
