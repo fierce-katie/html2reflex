@@ -2,8 +2,9 @@ cabal-version:       2.4
 name:                html2reflex
 version:             0.0.0.0
 synopsis:            Convert HTML to Reflex
-description:         Convert HTML to Reflex
-license:             NONE
+description:         Converting raw HTML into reflex-dom DSL
+license:             WTFPL
+license-file:        LICENSE
 author:              Catherine Galkina
 maintainer:          Catherine Galkina <catherine.galkina@gmail.com>
 copyright:           2023 Catherine Galkina
