@@ -1,5 +1,6 @@
 module Main (main) where
 
+import Data.Reflection
 import Data.Text qualified as T
 import Data.Text.IO qualified as T
 import HtmlToReflex (htmlToReflex)
@@ -10,11 +11,11 @@ import Options.Applicative
 main :: IO ()
 main = do
   opts <- execParser optParser
-  case opts.inputFile of
+  give opts.indentSpaces $ case opts.inputFile of
     Nothing -> runInteractive
     Just inp -> runWithFiles inp opts.outputFile
 
-runInteractive :: IO ()
+runInteractive :: Given Int => IO ()
 runInteractive = do
   putStrLn "Paste raw HTML and press <Ctrl-D> or press <Ctrl-C> to exit:"
   tty <- openFile "/dev/tty" ReadMode
@@ -25,7 +26,7 @@ runInteractive = do
   putStrLn $ Prelude.replicate 80 '='
   runInteractive
 
-runWithFiles :: FilePath -> Maybe FilePath -> IO ()
+runWithFiles :: Given Int => FilePath -> Maybe FilePath -> IO ()
 runWithFiles input moutput = do
   txt <- T.readFile input
   let res = htmlToReflex txt

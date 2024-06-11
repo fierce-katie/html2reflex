@@ -6,6 +6,7 @@ import Options.Applicative
 data Options = Options
   { inputFile :: Maybe FilePath
   , outputFile :: Maybe FilePath
+  , indentSpaces :: Int
   } deriving Generic
 
 optParser :: ParserInfo Options
@@ -15,7 +16,9 @@ optParser = info (optParser' <**> helper) (fullDesc <>
   where
     optParser' = Options <$>
       optional (strOption
-        (short 'i' <> long "input" <> metavar "FILENAME" <> help "Input file")) <*>
+        (short 'i' <> long "input" <> metavar "FILEPATH" <> help "Input file")) <*>
       optional (strOption
-        (short 'o' <> long "output" <> metavar "FILENAME" <> help "Output file"))
+        (short 'o' <> long "output" <> metavar "FILEPATH" <> help "Output file")) <*>
+      option auto (short 'n' <> long "indent" <> metavar "INT" <>
+        help "Number of spaces used for indentation" <> showDefault <> value 2)
 

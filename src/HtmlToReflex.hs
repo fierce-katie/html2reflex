@@ -3,16 +3,17 @@
 {-# LANGUAGE ViewPatterns #-}
 module HtmlToReflex (htmlToReflex) where
 
+import Data.Reflection
 import Data.String
 import Data.Text as T
 import Prelude as P
 import Text.HTML.TagSoup
 import Text.HTML.TagSoup.Tree
 
-htmlToReflex :: Text -> Text
+htmlToReflex :: Given Int => Text -> Text
 htmlToReflex = T.concat . P.map (formatTree 0) . parseTree
 
-formatTree :: Int -> TagTree Text -> Text
+formatTree :: Given Int => Int -> TagTree Text -> Text
 formatTree n = \case
   TagLeaf (formatTag n -> tag) | not (T.null tag) -> shift n <> tag <> "\n"
   TagBranch el attrs inner -> T.concat $
@@ -28,7 +29,8 @@ formatTree n = \case
       [] -> "blank"
       inner -> T.concat $ P.map (formatTree (n+1)) inner
 
-formatElem :: (Eq a, Show a, IsString a) => Int -> a -> [Attribute Text] -> [Text]
+formatElem :: (Eq a, Show a, IsString a, Given Int) =>
+  Int -> a -> [Attribute Text] -> [Text]
 formatElem n el attrs
   | el == "input" = elemWithConfig "input"
   | el == "select" = elemWithConfig "select"
@@ -45,7 +47,7 @@ formatElem n el attrs
       , shift (n+1), "-- & ", e, "ElementConfig_initialValue .~ _\n"
       , shift n, ")"]
 
-formatTag :: Int -> Tag Text -> Text
+formatTag :: Given Int => Int -> Tag Text -> Text
 formatTag n = \case
   TagText (T.strip -> txt) | not (T.null txt) -> T.concat
     [ "text \""
@@ -64,8 +66,8 @@ formatAttrs = parens . T.intercalate " <> " . P.map toAttr
 toText :: Show a => a -> Text
 toText = T.pack . show
 
-shift :: Int -> Text
-shift = flip T.replicate " " . (*2)
+shift :: Given Int => Int -> Text
+shift = flip T.replicate " " . (*given)
 
 classOnly :: [Attribute Text] -> Bool
 classOnly [("class",_)] = True
